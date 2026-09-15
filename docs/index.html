@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic Search Visibility Decay Scoring | FlyRank ML Capstone</title>
+    <style>
+        :root { --primary: #2563eb; --text: #1f2937; --bg: #f9fafb; --card: #ffffff; --border: #e5e7eb; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); margin: 0; padding: 0; }
+        .container { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+        header { border-bottom: 2px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
+        h1 { font-size: 2.1rem; color: #111827; margin-bottom: 8px; line-height: 1.25; }
+        .author { color: #4b5563; font-size: 0.95rem; margin-bottom: 16px; }
+        .abstract { background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 20px; border-radius: 4px; margin: 24px 0; font-size: 1.02rem; }
+        h2 { font-size: 1.35rem; color: #1e3a8a; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-top: 36px; }
+        table { width: 100%; border-collapse: collapse; margin: 18px 0; background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        th, td { padding: 10px 14px; text-align: left; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+        th { background: #f3f4f6; font-weight: 600; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; background: #e0e7ff; color: #3730a3; font-weight: 600; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.9rem; color: #6b7280; text-align: center; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Organic Search Visibility Decay Scoring: An Evidence-Backed Decision Engine</h1>
+        <div class="author"><strong>Author:</strong> Aishwarya | FlyRank Machine Learning Internship Capstone</div>
+        
+        <div class="abstract">
+            <strong>Abstract:</strong> 
+            Enterprise search teams manage thousands of URLs and lack scalable mechanisms to detect content decay before organic visibility collapses. This research designs an automated Refresh / Content Opportunity scoring engine using granular, anonymized search performance telemetry from the FlyRank warehouse. By formulating a strict, leakage-free 15-day feature window evaluated against a subsequent 15-day ground-truth outcome window across 123,896 content assets, we compare a Random Forest classifier against a standard ranking heuristic. The resulting predictive model achieved an evaluation precision of 0.572 and an ROC-AUC of 0.604, delivering a +17% precision lift over rule-based baselines. This work translates predictive probabilities into an operational triage playbook with standardized reason codes, enabling editors to prioritize content refreshes with measured confidence.
+        </div>
+    </header>
+
+    <section>
+        <h2>1. Introduction & Problem Statement</h2>
+        <p>SEO and content marketing operations face an acute resource-allocation challenge: enterprise sites harbor thousands of indexed URLs, yet editorial teams can only refresh a handful of pages each sprint. Traditional heuristics (e.g., flagging any page ranking beyond position 15) produce high false-alarm rates, resulting in wasted copywriting effort on pages that have not genuinely decayed. This project creates an automated, evidence-backed scoring engine to rank decaying assets early, directly supporting the weekly triage decision for editorial updates.</p>
+    </section>
+
+    <section>
+        <h2>2. Data & Sanitization Safeguards</h2>
+        <p>This study utilizes the FlyRank warehouse release (<code>internship-warehouse</code>), specifically extracting 123,896 content records from <code>fact_content_daily_performance_sample</code> across the observation period (June 1, 2026 to June 30, 2026). Records without active Google Search Console tracking (<code>gsc_data_available = false</code>) and pages with fewer than 20 impressions during the baseline window were excluded to filter out sparse low-traffic noise. <strong>Privacy Compliance:</strong> All domain names, URL paths, and client identifiers exist strictly as synthetic cryptographic hashes (e.g., <code>content_hash_id</code>), ensuring zero client-sensitive leakage.</p>
+    </section>
+
+    <section>
+        <h2>3. Methodology & Leakage Prevention</h2>
+        <p>To eliminate temporal lookahead bias, we implemented a strict time-aware split:</p>
+        <ul>
+            <li><strong>Feature Window (June 1 – June 15, 2026):</strong> Trailing impressions (<code>imp_prev15</code>), clicks (<code>clk_prev15</code>), average rank position (<code>pos_prev15</code>), and click-through rate (<code>ctr_prev15</code>).</li>
+            <li><strong>Ground-Truth Label Window (June 16 – June 30, 2026):</strong> Binary classification label <code>is_decaying = 1</code> defined if subsequent 15-day impressions decreased by &ge; 20% relative to the feature window.</li>
+        </ul>
+        <p>A Random Forest classifier was trained on 75% of the data and evaluated against the remaining 25% held-out test split, benchmarked directly against a standard heuristic rule (Position &gt; 15 and CTR &lt; 2%).</p>
+    </section>
+
+    <section>
+        <h2>4. Results & Empirical Lift</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Evaluation Metric</th>
+                    <th>Heuristic Baseline</th>
+                    <th>Random Forest Model</th>
+                    <th>Performance Lift</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Precision</strong></td>
+                    <td>0.489</td>
+                    <td><strong>0.572</strong></td>
+                    <td>+17.0% relative improvement</td>
+                </tr>
+                <tr>
+                    <td><strong>ROC-AUC</strong></td>
+                    <td>0.500</td>
+                    <td><strong>0.604</strong></td>
+                    <td>+0.104 discrimination gain</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>The model substantially reduced false positives in the audit queue, ensuring content teams spend less time investigating pages experiencing normal day-to-day rank variance.</p>
+    </section>
+
+    <section>
+        <h2>5. Limitations & Honest Framing</h2>
+        <ul>
+            <li><strong>Observed Association, Not Algorithmic Causality:</strong> This model identifies empirical patterns of search visibility decay within historical telemetry. It does not claim to reverse-engineer or prove Google's core ranking algorithm, nor does it guarantee that executing a content refresh will causally restore lost impressions or rank.</li>
+            <li><strong>Short-Window Horizon (30-Day Window):</strong> Because the observation period spans 30 days (split into 15-day feature and label windows), it captures short-term trajectory shifts rather than multi-quarter macroeconomic seasonality or broad search engine core updates.</li>
+            <li><strong>Exclusion of Off-Page & Technical Factors:</strong> The feature set relies strictly on search performance metrics (impressions, clicks, position, CTR). It excludes off-page external variables such as backlink loss, technical crawl errors, or rendering latency.</li>
+            <li><strong>Decision-Support Scope:</strong> All generated scores and flags must be interpreted strictly as an evidence-backed prioritization filter to guide human editorial audits, not as an autonomous, deterministic system for republishing content.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>6. Ranked Recommendations (The Action Playbook)</h2>
+        <p>Standardized diagnostic reason codes mapped to recommended editorial action:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reason Code</th>
+                    <th>Diagnostic Signal</th>
+                    <th>Recommended Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge">HIGH_VOLUME_VULNERABILITY</span></td>
+                    <td>High baseline impressions with early decay trajectory</td>
+                    <td>Prioritize immediately. Conduct full topical audit and update thin sections before losses compound.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge">CTR_UNDERPERFORMER</span></td>
+                    <td>High impressions/rank but low organic click capture</td>
+                    <td>SERP Snippet Optimization. Rewrite meta titles/descriptions and add structured data markup.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge">POSITION_DRIFT_LOW_RANK</span></td>
+                    <td>Rankings drifting past position 20 with downward momentum</td>
+                    <td>Structural Review. Evaluate page consolidation, merging with higher-authority assets, or pruning.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge">ORGANIC_VISIBILITY_DECAY</span></td>
+                    <td>Broad erosion across search metrics</td>
+                    <td>Baseline Refresh. Audit internal link graph and review competitor content coverage.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>7. Reproducibility & Repository Access</h2>
+        <p>All extraction pipelines, time-aware aggregations, modeling notebooks, and evaluation scripts are available in the public project repository: <a href="https://github.com/Aishwarya00608/FlyRank_Assignment" target="_blank">github.com/Aishwarya00608/FlyRank_Assignment</a>.</p>
+    </section>
+
+    <footer>
+        <p>Built on the <a href="https://flyrank.ai" target="_blank">FlyRank ML Internship dataset</a>.</p>
+    </footer>
+</div>
+</body>
+</html>
