@@ -483,16 +483,39 @@ html_content = """<!DOCTYPE html>
             <li><code>ctr_prev15</code>: Baseline click-through rate ($\text{Clicks} / \text{Impressions}$), capturing intent match and snippet health.</li>
         </ul>
 
-        <h3>Baseline & Candidate Architecture</h3>
+       <h3>Baseline & Candidate Architecture</h3>
         <p>
-            We benchmarked an ensemble <strong>Random Forest Classifier</strong> ($N = 100 \text{ trees}, \text{max\_depth} = 5$, class-balanced subsampling) against the prevailing industry heuristic:
+            We benchmarked an ensemble <strong>Random Forest Classifier</strong> (100 decision trees, maximum depth of 5, class-balanced subsampling) against the prevailing industry heuristic:
         </p>
-        <div class="disclaimer-box" style="margin: 12px 0;">
-            <strong>Industry Heuristic Baseline:</strong> Flag content for refresh if $\text{pos\_prev15} > 15$ and $\text{ctr\_prev15} < 0.02$.
+
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #d97706; border-radius: 8px; padding: 16px 20px; margin: 18px 0; font-size: 0.95rem;">
+            <strong style="color: #92400e;">Industry Heuristic Baseline Rule:</strong>
+            <div style="margin-top: 8px; font-family: 'Times New Roman', Times, serif; font-size: 1.15rem; color: #1e293b;">
+                Flag for Content Refresh if: &nbsp;
+                <span style="font-weight: bold; background: #fef3c7; padding: 2px 8px; border-radius: 4px; border: 1px solid #fcd34d;">
+                    Average Search Position &gt; 15.0
+                </span>
+                &nbsp; <strong>AND</strong> &nbsp;
+                <span style="font-weight: bold; background: #fef3c7; padding: 2px 8px; border-radius: 4px; border: 1px solid #fcd34d;">
+                    Click-Through Rate (CTR) &lt; 2.0%
+                </span>
+            </div>
         </div>
+
         <p>
-            The dataset was split using a stratified 75/25 train-to-test partition ($N_{\text{train}} = 92,922$, $N_{\text{test}} = 30,974$) preserving class balance.
+            The dataset was partitioned using a stratified <strong>75/25 train-to-test split</strong> to preserve label distribution across cohorts:
         </p>
+
+        <div style="display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Training Partition (75%)</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: #1e40af; margin-top: 4px;">92,922 Assets</div>
+            </div>
+            <div style="flex: 1; min-width: 200px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Held-Out Evaluation Partition (25%)</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: #0d9488; margin-top: 4px;">30,974 Assets</div>
+            </div>
+        </div>
     </section>
 
     <!-- SECTION 4 -->
