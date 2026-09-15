@@ -313,14 +313,14 @@ html_content = """<!DOCTYPE html>
         <div class="badge-tag">Search Intelligence & Telemetry Research</div>
         <h1>Organic Search Visibility Decay Scoring: An Evidence-Backed Decision Engine</h1>
         <div class="meta-strip">
-            <span><strong>Author:</strong> Aishwarya</span>
+            <span><strong>Author:</strong> Bulusu Vyaghri Aiswarya</span>
             <span><strong>Cohort:</strong> FlyRank ML Internship Capstone</span>
             <span><strong>Lane:</strong> Refresh / Content Opportunity Scoring</span>
             <span><strong>Evaluated Items:</strong> 123,896 Assets</span>
         </div>
 
         <div class="abstract-card">
-            <h3>Abstract (5-Sentence Summary)</h3>
+            <h3>Abstract</h3>
             <p>
                 Enterprise content and search optimization teams manage vast catalogs of indexed assets and lack scalable, low-noise telemetry to detect organic visibility decay before traffic compound loss occurs. This research builds and validates an automated Refresh / Content Opportunity scoring engine using large-scale, anonymized search performance telemetry from the FlyRank warehouse release. By formulating a rigorous, leakage-free 15-day historical feature window evaluated against a subsequent 15-day ground-truth trajectory across 123,896 content assets, we benchmark an ensemble Random Forest classifier against standard heuristic ranking rules. The predictive engine achieves an evaluation precision of 0.572 and an ROC-AUC of 0.604, delivering a +17.0% relative precision lift over prevailing industry baselines and eliminating 48% of false-positive audit alarms. This study translates these predictive probabilities into an operational triage playbook with standardized reason codes, equipping editorial teams to allocate content refreshes with measured, data-backed confidence.
             </p>
@@ -441,12 +441,34 @@ html_content = """<!DOCTYPE html>
             <li><strong>Label Window ($\mathcal{W}_{\text{label}} = (T_{\text{split}}, T_{\text{max}}]$):</strong> The ground-truth outcome label is observed exclusively in the subsequent 15 days. Features have zero awareness of this interval.</li>
         </ul>
 
-        <h3>Mathematical Formulation of the Target Label</h3>
-        <p>
-            We define organic visibility decay as a binary outcome indicator $Y_i \in \{0, 1\}$ for each content item $i$:
-        </p>
-        <div class="abstract-card" style="background: #ffffff; border-left-color: #64748b; margin: 16px 0;">
-            $$Y_i = \begin{cases} 1 & \text{if } \left(\frac{\sum_{t \in \mathcal{W}_{\text{label}}} \text{Impressions}_{i,t}}{\sum_{t \in \mathcal{W}_{\text{feat}}} \text{Impressions}_{i,t}}\right) \le 0.80 \\ 0 & \text{otherwise} \end{cases}$$
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #1e40af; border-radius: 8px; padding: 22px 26px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow-x: auto;">
+            <div style="display: flex; align-items: center; justify-content: center; font-family: 'Times New Roman', Times, Georgia, serif; font-size: 1.25rem; color: #0f172a;">
+                <span style="font-style: italic; font-weight: bold; margin-right: 12px; font-size: 1.35rem;">Y<sub>i</sub> =</span>
+                <span style="font-size: 3.8rem; font-weight: 200; margin-right: 14px; line-height: 1; color: #334155;">{</span>
+                <div style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
+                    <!-- Case 1: Decaying (1) -->
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span style="font-weight: bold; font-size: 1.2rem;">1</span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.95rem; color: #475569;">if</span>
+                        <div style="display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px;">
+                            <span style="border-bottom: 1.5px solid #1e293b; padding: 0 10px 3px 10px; font-size: 1.05rem;">
+                                Total Impressions (Days 16–30)
+                            </span>
+                            <span style="padding: 3px 10px 0 10px; font-size: 1.05rem;">
+                                Total Impressions (Days 1–15)
+                            </span>
+                        </div>
+                        <span style="font-weight: bold; font-size: 1.2rem; margin: 0 4px;">&le; 0.80</span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.8rem; color: #dc2626; font-weight: 700; background: #fee2e2; padding: 3px 8px; border-radius: 4px;">(&ge; 20% Drop)</span>
+                    </div>
+                    <!-- Case 2: Retained (0) -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-weight: bold; font-size: 1.2rem;">0</span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.95rem; color: #475569;">otherwise</span>
+                        <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.8rem; color: #059669; font-weight: 700; background: #dcfce7; padding: 3px 8px; border-radius: 4px;">(Retained / Stable)</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <p>
             A page is classified as decaying ($Y_i = 1$) if its search impressions decline by <strong>20% or more</strong> in the subsequent 15-day period compared to its historical baseline.
@@ -753,7 +775,7 @@ html_content = """<!DOCTYPE html>
             This research capstone was built on the <a href="https://flyrank.ai" target="_blank">FlyRank ML Internship dataset</a>.
         </p>
         <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 8px;">
-            © 2026 Aishwarya. Published for the FlyRank Search Intelligence Capstone. All telemetry anonymized.
+            © 2026 Bulusu Vyaghri Aiswarya. Published for the FlyRank Search Intelligence Capstone. All telemetry anonymized.
         </p>
     </footer>
 
